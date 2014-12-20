@@ -1,0 +1,34 @@
+package main
+
+import (
+	"github.com/sendgrid/sendgrid-go"
+	"fmt"
+)
+
+func main() {
+	sgclient := sendgrid.NewSendGridClient("shannon.moore@sendgrid.com", "xxxxx")
+	msg := sendgrid.NewMail()
+	msg.AddTo("shannon.moore@sendgrid.com")
+	msg.AddToName("Shannon Moore")
+	msg.SetSubject("SendGrid Go")
+	msg.SetText("Byah!")
+	msg.SetHTML("<h1>HELLO!</h1>")
+	msg.SetFrom("shannon@fixingitapp.com")
+
+	//
+	// SMTPAPI Examples below
+	// ---------------------------
+	tos := []string{"test1@sink.sendgrid.net", "test2@sink.sendgrid.net", "shannon.moore@sendgrid.com"}
+	msg.SMTPAPIHeader.AddTos(tos)
+	
+	// Template engine (uses SetHTML for <%body%> tag substitution)
+	msg.AddFilter("template", "template_id", "433da4a0-3dcb-4840-bcae-abc7fd70d96e")
+
+	
+	// Send mail and check success
+	if r := sgclient.Send(msg); r == nil {
+		fmt.Println("Email sent!")
+	} else {
+		fmt.Println(r)
+	}
+}
